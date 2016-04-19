@@ -91,21 +91,28 @@ matrix_t *delete_row_column(struct matrix_t *m,
 
 int32_t matrix_det(matrix_t *m)
 {
-    static int32_t sum = 0;
+    //static int32_t sum = 0;
 
     print_matrix(m);
-    printf("\n");
+    //printf("\n");
 
     if (m->elems.size() == 4) {
+
+        printf("returning: %d\n", get_matrix_elem(m, 1, 1) * get_matrix_elem(m, 2, 2) -
+               get_matrix_elem(m, 2, 1) * get_matrix_elem(m, 1, 2));
+
         return get_matrix_elem(m, 1, 1) * get_matrix_elem(m, 2, 2) -
                get_matrix_elem(m, 2, 1) * get_matrix_elem(m, 1, 2); 
     } else {
-        for (uint32_t j = 1; j <= sqrt(m->elems.size()); j++) {
-            matrix_t *tm = delete_row_column(m, 1, j);
-            sum += pow(-1, 1 + j) * get_matrix_elem(m, 1, j) * matrix_det(tm);
-        }
+        //for (uint32_t j = 1; j <= sqrt(m->elems.size()); j++) {
+            //printf("pow: %d %d\n", (int32_t)pow(-1, 1 + 1), get_matrix_elem(m, 1, 1/*j*/));
+            matrix_t *tm = delete_row_column(m, 1, 2/*j*/);
+            int32_t ret = 0;
+            ret += (int32_t)pow(-1, 1 + 2 /*+ j*/) * \
+                   get_matrix_elem(m, 1, 2/*j*/) * matrix_det(tm);
+        //}
 
-        return sum;
+        return ret;
     }
 }
 
@@ -125,20 +132,20 @@ int main()
 
     elem.i = 2; elem.j = 1; elem.val = 2;
     m->elems.push_back(elem);
-    elem.i = 2; elem.j = 2; elem.val = 0;
+    elem.i = 2; elem.j = 2; elem.val = 1;
     m->elems.push_back(elem);
     elem.i = 2; elem.j = 3; elem.val = 5;
     m->elems.push_back(elem);
     elem.i = 2; elem.j = 4; elem.val = 7;
     m->elems.push_back(elem);
 
-    elem.i = 3; elem.j = 1; elem.val = 0;
+    elem.i = 3; elem.j = 1; elem.val = 1;
     m->elems.push_back(elem);
     elem.i = 3; elem.j = 2; elem.val = 4;
     m->elems.push_back(elem);
     elem.i = 3; elem.j = 3; elem.val = 0;
     m->elems.push_back(elem);
-    elem.i = 3; elem.j = 4; elem.val = 0;
+    elem.i = 3; elem.j = 4; elem.val = 1;
     m->elems.push_back(elem);
 
     elem.i = 4; elem.j = 1; elem.val = 0;
@@ -147,7 +154,7 @@ int main()
     m->elems.push_back(elem);
     elem.i = 4; elem.j = 3; elem.val = 6;
     m->elems.push_back(elem);
-    elem.i = 4; elem.j = 4; elem.val = 0;
+    elem.i = 4; elem.j = 4; elem.val = -3;
     m->elems.push_back(elem);
 
     m->size = 4;
