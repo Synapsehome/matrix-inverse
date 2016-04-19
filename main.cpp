@@ -14,7 +14,7 @@ struct matrix_elem_t {
 };
 
 struct matrix_t {
-    int32_t size;
+    //int32_t size;
     std::vector<matrix_elem_t> elems;
 };
 
@@ -32,19 +32,6 @@ int32_t get_matrix_elem(struct matrix_t *mat,
     return -1;
 }
 
-int32_t calc_matrix_det_without_i_j(struct matrix_t *m, 
-        int32_t row, int32_t column)
-{
-    static int32_t det = 0;
-
-    if (m->size == 2) {
-        return get_matrix_elem(m, 1, 1) * get_matrix_elem(m, 2, 2) -
-               get_matrix_elem(m, 2, 1) * get_matrix_elem(m, 1, 2);
-    } else {
-        matrix_t *tmp = (matrix_t *)malloc(m->elems.size() + 1);
-    }
-}
-
 void print_matrix(struct matrix_t *m) 
 {
     if (m == NULL)
@@ -58,7 +45,7 @@ void print_matrix(struct matrix_t *m)
     }
 }
 
-matrix_t *delete_row_column(struct matrix_t *m, 
+matrix_t *delete_row_column(matrix_t *m, 
         int32_t row, int32_t column)
 {
     int32_t count = 0;
@@ -91,27 +78,17 @@ matrix_t *delete_row_column(struct matrix_t *m,
 
 int32_t matrix_det(matrix_t *m)
 {
-    //static int32_t sum = 0;
-
-    print_matrix(m);
-    //printf("\n");
-
     if (m->elems.size() == 4) {
-
-        printf("returning: %d\n", get_matrix_elem(m, 1, 1) * get_matrix_elem(m, 2, 2) -
-               get_matrix_elem(m, 2, 1) * get_matrix_elem(m, 1, 2));
-
         return get_matrix_elem(m, 1, 1) * get_matrix_elem(m, 2, 2) -
                get_matrix_elem(m, 2, 1) * get_matrix_elem(m, 1, 2); 
     } else {
-        //for (uint32_t j = 1; j <= sqrt(m->elems.size()); j++) {
-            //printf("pow: %d %d\n", (int32_t)pow(-1, 1 + 1), get_matrix_elem(m, 1, 1/*j*/));
-            matrix_t *tm = delete_row_column(m, 1, 2/*j*/);
-            int32_t ret = 0;
-            ret += (int32_t)pow(-1, 1 + 2 /*+ j*/) * \
-                   get_matrix_elem(m, 1, 2/*j*/) * matrix_det(tm);
-        //}
-
+        int32_t ret = 0;
+        
+        for (uint32_t j = 1; j <= sqrt(m->elems.size()); j++) {
+            matrix_t *tm = delete_row_column(m, 1, j);
+            ret += (int32_t)pow(-1, 1 + j) * \
+                   get_matrix_elem(m, 1, j) * matrix_det(tm);
+        }
         return ret;
     }
 }
@@ -121,11 +98,11 @@ int main()
     matrix_t *m = new matrix_t;
     matrix_elem_t elem;
 
-    elem.i = 1; elem.j = 1; elem.val = 5;
+    elem.i = 1; elem.j = 1; elem.val = 14;
     m->elems.push_back(elem);
     elem.i = 1; elem.j = 2; elem.val = 5;
     m->elems.push_back(elem);
-    elem.i = 1; elem.j = 3; elem.val = 5;
+    elem.i = 1; elem.j = 3; elem.val = 32;
     m->elems.push_back(elem);
     elem.i = 1; elem.j = 4; elem.val = 5;
     m->elems.push_back(elem);
@@ -134,21 +111,21 @@ int main()
     m->elems.push_back(elem);
     elem.i = 2; elem.j = 2; elem.val = 1;
     m->elems.push_back(elem);
-    elem.i = 2; elem.j = 3; elem.val = 5;
+    elem.i = 2; elem.j = 3; elem.val = -890;
     m->elems.push_back(elem);
-    elem.i = 2; elem.j = 4; elem.val = 7;
+    elem.i = 2; elem.j = 4; elem.val = 65;
     m->elems.push_back(elem);
 
     elem.i = 3; elem.j = 1; elem.val = 1;
     m->elems.push_back(elem);
-    elem.i = 3; elem.j = 2; elem.val = 4;
+    elem.i = 3; elem.j = 2; elem.val = 400;
     m->elems.push_back(elem);
-    elem.i = 3; elem.j = 3; elem.val = 0;
+    elem.i = 3; elem.j = 3; elem.val = 8;
     m->elems.push_back(elem);
     elem.i = 3; elem.j = 4; elem.val = 1;
     m->elems.push_back(elem);
 
-    elem.i = 4; elem.j = 1; elem.val = 0;
+    elem.i = 4; elem.j = 1; elem.val = 15;
     m->elems.push_back(elem);
     elem.i = 4; elem.j = 2; elem.val = 0;
     m->elems.push_back(elem);
@@ -157,18 +134,10 @@ int main()
     elem.i = 4; elem.j = 4; elem.val = -3;
     m->elems.push_back(elem);
 
-    m->size = 4;
+    //m->size = 4;
+    //print_matrix(m);
 
-    /*print_matrix(m);
-
-    matrix_t *tm = delete_row_column(m, 2, 3);
-
-    printf("\n");
-    print_matrix(tm);
-
-    tm->size = 4;
-*/
     printf("det: %i\n", matrix_det(m));
 
-   return 0;
+    return 0;
 }
