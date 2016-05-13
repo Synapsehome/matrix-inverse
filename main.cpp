@@ -106,6 +106,7 @@ int32_t matrix_det(matrix_t *m)
             matrix_t *tm = delete_row_column(m, 1, j);
             ret += (int32_t)pow(-1, 1 + j) * \
                    get_matrix_elem(m, 1, j) * matrix_det(tm);
+            delete tm;
         }
         return ret;
     }
@@ -115,7 +116,7 @@ int32_t matrix_adjunct(matrix_t *m, int32_t i, int32_t j)
 {
     matrix_t *mn = delete_row_column(m, i, j);
     int32_t adj =  (((i + j) % 2) ? -1 : 1) * matrix_det(mn);
-    free(mn);
+    delete mn;
     return adj;
 }
 
@@ -283,5 +284,9 @@ int main()
     }
     printf("det: %i\n", det_m);
     print_matrix(m_adj);
+
+    delete m;
+    delete m_adj;
+
     return 0;
 }
